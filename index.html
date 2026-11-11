@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Do'konim - Kiyim do'koni</title>
+  <style>
+    :root {
+      --green: #1fbf6a;
+      --green-dark: #128a4b;
+      --blue: #2a7bff;
+      --blue-dark: #1450b8;
+      --white: #ffffff;
+      --ink: #0f1f2e;
+      --muted: #5b6b7c;
+      --glass: rgba(255, 255, 255, 0.14);
+      --shadow: 0 30px 60px rgba(10, 40, 90, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f3f8ff;
+      color: var(--ink);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+    a { color: inherit; }
+    button { font-family: inherit; }
+
+    /* ===== HEADER ===== */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      background: rgba(255,255,255,0.8);
+      border-bottom: 1px solid rgba(42,123,255,0.12);
+    }
+    .nav {
+      max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    }
+    .logo {
+      font-size: 1.5rem; font-weight: 900; letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .nav-links { display: flex; align-items: center; gap: 22px; }
+    .nav-links a {
+      text-decoration: none; font-weight: 700; color: var(--ink);
+      position: relative; font-size: 0.95rem;
+    }
+    .nav-links a::after {
+      content: ""; position: absolute; left: 0; bottom: -4px;
+      width: 0; height: 3px; background: var(--green); border-radius: 3px; transition: width 0.3s;
+    }
+    .nav-links a:hover::after { width: 100%; }
+
+    .cart-btn {
+      position: relative; border: none;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      color: var(--white); padding: 10px 18px; border-radius: 12px;
+      font-weight: 800; cursor: pointer;
+      box-shadow: 0 8px 18px rgba(42,123,255,0.3); transition: transform 0.2s;
+    }
+    .cart-btn:hover { transform: translateY(-2px); }
+    .cart-btn.bump { animation: bump 0.5s; }
+    @keyframes bump {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.18) rotate(-4deg); }
+      60% { transform: scale(0.95) rotate(3deg); }
+      100% { transform: scale(1); }
+    }
+    .badge {
+      position: absolute; top: -8px; right: -8px;
+      min-width: 24px; height: 24px; padding: 0 6px; border-radius: 999px;
+      background: #ff4d6d; color: var(--white); font-size: 0.8rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; border: 2px solid var(--white);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative; min-height: 100vh; padding: 120px 24px 80px;
+      display: flex; align-items: center;
+      background: linear-gradient(135deg, #0d5bd6 0%, #2a7bff 35%, #1fbf6a 100%);
+      background-size: 200% 200%; animation: bgShift 12s ease infinite;
+      color: var(--white); overflow: hidden;
+    }
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 40px; flex-wrap: wrap; position: relative; z-index: 2;
+    }
+    .hero-text { flex: 1 1 420px; }
+    .hero-badge {
+      display: inline-block; padding: 8px 16px; border-radius: 999px;
+      background: var(--glass); border: 1px solid rgba(255,255,255,0.35);
+      font-weight: 700; font-size: 0.9rem; margin-bottom: 22px; animation: fadeUp 0.8s both;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.1; font-weight: 900;
+      margin-bottom: 20px; text-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: fadeUp 0.8s 0.15s both;
+    }
+    .hero p {
+      font-size: 1.15rem; opacity: 0.95; margin-bottom: 32px; max-width: 520px;
+      animation: fadeUp 0.8s 0.3s both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .btn {
+      display: inline-block; padding: 16px 34px; border-radius: 14px;
+      text-decoration: none; font-weight: 800;
+      transition: transform 0.25s, box-shadow 0.25s; animation: fadeUp 0.8s 0.45s both;
+    }
+    .btn-main { background: var(--white); color: var(--blue-dark); box-shadow: 0 14px 30px rgba(0,0,0,0.2); }
+    .btn-main:hover { transform: translateY(-4px) scale(1.03); }
+
+    /* Hero 3D: aylanuvchi kiyim stendi */
+    .stage {
+      flex: 1 1 380px; height: 400px; perspective: 1100px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .showcase {
+      position: relative; width: 300px; height: 340px;
+      transform-style: preserve-3d; animation: sway 9s ease-in-out infinite;
+    }
+    @keyframes sway {
+      0%, 100% { transform: rotateX(-6deg) rotateY(-18deg); }
+      50% { transform: rotateX(4deg) rotateY(18deg); }
+    }
+    .showcase .garment {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      filter: drop-shadow(0 30px 30px rgba(0,20,60,0.35));
+    }
+    .showcase .g1 { animation: floatA 5s ease-in-out infinite; }
+    .showcase .g2 {
+      transform: translateZ(-60px) scale(0.7) translateX(60%) translateY(-18%);
+      opacity: 0.85; animation: floatB 6s ease-in-out infinite;
+    }
+    @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+    @keyframes floatB { 0%,100% { transform: translateY(0) translateZ(-60px) scale(0.7) translateX(60%) translateY(-18%);} 50% { transform: translateY(-20px) translateZ(-60px) scale(0.7) translateX(60%) translateY(-18%);} }
+
+    .floating {
+      position: absolute; border-radius: 50%; background: rgba(255,255,255,0.12);
+      filter: blur(2px); animation: float 9s ease-in-out infinite; z-index: 1;
+    }
+    .fl1 { width: 220px; height: 220px; top: 8%; left: -60px; }
+    .fl2 { width: 140px; height: 140px; bottom: 10%; right: 8%; animation-delay: -3s; background: rgba(31,191,106,0.25); }
+    .fl3 { width: 90px; height: 90px; top: 15%; right: 30%; animation-delay: -6s; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-30px) translateX(15px); }
+    }
+
+    /* ===== SECTIONS ===== */
+    section { max-width: 1200px; margin: 0 auto; padding: 100px 24px; }
+    .tag {
+      display: block; text-align: center; font-weight: 800; color: var(--green-dark);
+      letter-spacing: 2px; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 10px;
+    }
+    section h2 {
+      text-align: center; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 900;
+      color: var(--blue-dark); margin-bottom: 14px;
+    }
+    .subtitle { text-align: center; color: var(--muted); font-size: 1.05rem; margin-bottom: 40px; }
+
+    /* ===== FILTER ===== */
+    .filters { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 48px; }
+    .filter-btn {
+      border: 2px solid var(--blue); background: var(--white); color: var(--blue-dark);
+      padding: 10px 20px; border-radius: 999px; font-weight: 700; cursor: pointer; transition: all 0.25s;
+    }
+    .filter-btn:hover { transform: translateY(-2px); }
+    .filter-btn.active {
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      border-color: transparent; color: var(--white); box-shadow: 0 10px 20px rgba(42,123,255,0.3);
+    }
+
+    /* ===== PRODUCTS ===== */
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .card { perspective: 900px; animation: cardIn 0.6s both; }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .card.hidden { display: none; }
+    .card-inner {
+      position: relative; background: var(--white); border-radius: 26px; padding: 18px 18px 22px;
+      box-shadow: 0 18px 40px rgba(10,40,90,0.12);
+      transition: transform 0.5s cubic-bezier(.2,.8,.2,1), box-shadow 0.5s;
+      transform-style: preserve-3d;
+    }
+    .card:hover .card-inner {
+      transform: rotateX(6deg) rotateY(-10deg) translateY(-8px); box-shadow: var(--shadow);
+    }
+    .brand-tag {
+      position: absolute; top: 28px; left: 28px; z-index: 2;
+      background: var(--white); color: var(--blue-dark); font-size: 0.75rem; font-weight: 800;
+      padding: 5px 12px; border-radius: 999px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); letter-spacing: 0.5px;
+    }
+    .card-img {
+      height: 250px; border-radius: 18px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      transform: translateZ(40px);
+    }
+    .card-img::after {
+      content: ""; position: absolute; left: 25%; right: 25%; bottom: 14px; height: 14px;
+      border-radius: 50%; background: rgba(10,30,60,0.18); filter: blur(6px);
+    }
+    .card-img svg {
+      width: 170px; height: 170px; position: relative; z-index: 1;
+      transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+      animation: idleFloat 4s ease-in-out infinite;
+    }
+    .card:hover .card-img svg { transform: rotateY(360deg) scale(1.08); }
+    @keyframes idleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .c-blue  { background: radial-gradient(circle at 30% 20%, #ffffff, #cfe2ff 70%); }
+    .c-green { background: radial-gradient(circle at 30% 20%, #ffffff, #cff5e0 70%); }
+    .c-mix   { background: radial-gradient(circle at 30% 20%, #ffffff, #d7ecff 55%, #d2f6e2 100%); }
+
+    .card-body { padding: 18px 6px 0; transform: translateZ(30px); }
+    .card-body h3 { font-size: 1.1rem; margin-bottom: 4px; }
+    .card-body .brand { font-size: 0.85rem; color: var(--blue-dark); font-weight: 700; margin-bottom: 6px; }
+    .price { font-weight: 900; font-size: 1.15rem; color: var(--green-dark); margin-bottom: 4px; }
+    .desc { color: var(--muted); font-size: 0.92rem; margin-bottom: 14px; }
+    .add-btn {
+      width: 100%; border: none; padding: 12px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--green)); color: var(--white);
+      font-weight: 800; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 18px rgba(42,123,255,0.25);
+    }
+    .add-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(42,123,255,0.35); }
+    .add-btn:active { transform: scale(0.97); }
+
+    .fly {
+      position: fixed; width: 22px; height: 22px; border-radius: 50%;
+      background: var(--green); z-index: 200; pointer-events: none; box-shadow: 0 0 12px var(--green);
+    }
+
+    /* ===== ABOUT ===== */
+    .about { max-width: none; background: linear-gradient(180deg, #ffffff 0%, #eaf3ff 100%); }
+    .about-inner { max-width: 1200px; margin: 0 auto; }
+    .features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-top: 30px; }
+    .feature {
+      padding: 34px 26px; border-radius: 22px; color: var(--white); font-weight: 800; font-size: 1.1rem;
+      transition: transform 0.4s; box-shadow: 0 16px 30px rgba(20,80,184,0.2);
+    }
+    .feature:hover { transform: translateY(-10px) rotateX(10deg); }
+    .feature small { display: block; font-weight: 500; font-size: 0.92rem; opacity: 0.9; margin-top: 8px; }
+    .f1 { background: linear-gradient(135deg, var(--blue), #5aa0ff); }
+    .f2 { background: linear-gradient(135deg, var(--green), #66e39c); }
+    .f3 { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); }
+    .f4 { background: linear-gradient(135deg, var(--green-dark), var(--green)); }
+
+    /* ===== CONTACT ===== */
+    .contact-card {
+      max-width: 620px; margin: 0 auto; background: var(--white); border-radius: 28px;
+      padding: 44px 36px; text-align: center; box-shadow: var(--shadow); border-top: 6px solid var(--green);
+    }
+    .contact-card p { font-size: 1.1rem; margin-bottom: 16px; }
+    .contact-card a { color: var(--blue-dark); font-weight: 800; text-decoration: none; }
+    .contact-card a:hover { color: var(--green-dark); }
+
+    footer {
+      text-align: center; padding: 30px 24px; color: var(--white);
+      background: linear-gradient(90deg, var(--blue-dark), var(--blue), var(--green-dark)); font-weight: 600;
+    }
+
+    /* ===== CART ===== */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(10,30,60,0.45);
+      opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 90;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+    .cart {
+      position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100%);
+      background: var(--white); z-index: 100; transform: translateX(100%);
+      transition: transform 0.45s cubic-bezier(.2,.8,.2,1);
+      display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.2);
+    }
+    .cart.open { transform: translateX(0); }
+    .cart-head {
+      padding: 22px 24px; display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #e3ecf7;
+    }
+    .cart-head h3 { font-size: 1.3rem; color: var(--blue-dark); }
+    .close-btn {
+      border: none; background: #eef4ff; width: 38px; height: 38px; border-radius: 50%;
+      font-size: 1.2rem; cursor: pointer; color: var(--blue-dark);
+    }
+    .cart-items { flex: 1; overflow-y: auto; padding: 16px 24px; }
+    .cart-empty { text-align: center; color: var(--muted); padding: 60px 0; }
+    .cart-item { display: flex; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid #eef3f9; animation: cardIn 0.4s both; }
+    .cart-thumb { width: 70px; height: 70px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .cart-thumb svg { width: 56px; height: 56px; }
+    .cart-info { flex: 1; }
+    .cart-info strong { display: block; font-size: 0.98rem; }
+    .cart-info span { color: var(--green-dark); font-weight: 800; font-size: 0.92rem; }
+    .qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .qty button {
+      width: 28px; height: 28px; border-radius: 8px; border: 1px solid #d5e3f5;
+      background: #f4f8ff; cursor: pointer; font-weight: 800; color: var(--blue-dark);
+    }
+    .remove { border: none; background: none; color: #ff4d6d; cursor: pointer; font-size: 1.2rem; }
+    .cart-foot { padding: 22px 24px; border-top: 1px solid #e3ecf7; }
+    .total-row { display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 900; margin-bottom: 16px; }
+    .checkout {
+      width: 100%; border: none; padding: 16px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      color: var(--white); font-weight: 800; font-size: 1rem; cursor: pointer;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1000px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .features { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .nav-links a { font-size: 0.85rem; }
+      .nav-links { gap: 12px; }
+      .grid { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .stage { height: 320px; }
+      .showcase { width: 230px; height: 260px; }
+      .card-img svg { width: 150px; height: 150px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Kiyim shakllari (bir marta aniqlanadi, hamma joyda ishlatiladi) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="gBlue" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#6fa8ff"/><stop offset="0.55" stop-color="#2a7bff"/><stop offset="1" stop-color="#1450b8"/>
+      </linearGradient>
+      <linearGradient id="gGreen" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#7ef0b0"/><stop offset="0.55" stop-color="#1fbf6a"/><stop offset="1" stop-color="#128a4b"/>
+      </linearGradient>
+      <linearGradient id="gDenim" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4f8fe6"/><stop offset="1" stop-color="#1b4fa8"/>
+      </linearGradient>
+      <linearGradient id="gShade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#000" stop-opacity="0.18"/><stop offset="0.5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0.25"/>
+      </linearGradient>
+
+      <!-- Ko'ylak -->
+      <symbol id="shirt" viewBox="0 0 120 120">
+        <path d="M44 22 Q60 30 76 22 L100 38 L92 56 L84 50 L84 104 Q60 110 36 104 L36 50 L28 56 L20 38 Z" fill="url(#gBlue)"/>
+        <path d="M44 22 Q60 30 76 22 L70 18 Q60 26 50 18 Z" fill="#ffffff" opacity="0.85"/>
+        <path d="M60 30 L60 104" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="60" cy="48" r="1.8" fill="#fff"/><circle cx="60" cy="62" r="1.8" fill="#fff"/><circle cx="60" cy="76" r="1.8" fill="#fff"/>
+        <path d="M44 60 Q48 70 46 90" stroke="#0a2a66" stroke-width="2" fill="none" opacity="0.25"/>
+        <path d="M36 104 Q60 110 84 104" stroke="#0a2a66" stroke-width="2" fill="none" opacity="0.2"/>
+        <path d="M36 50 L36 104 L84 104 L84 50 Z" fill="url(#gShade)"/>
+      </symbol>
+
+      <!-- Ko'ylak (ayollar) -->
+      <symbol id="dress" viewBox="0 0 120 120">
+        <path d="M50 14 Q60 22 70 14 L76 32 Q60 40 44 32 Z" fill="url(#gGreen)"/>
+        <path d="M44 32 Q60 40 76 32 L80 56 Q86 80 96 110 Q60 118 24 110 Q34 80 40 56 Z" fill="url(#gGreen)"/>
+        <path d="M40 56 Q60 62 80 56" stroke="#fff" stroke-width="2" fill="none" opacity="0.5"/>
+        <path d="M50 70 Q60 76 70 70 M46 90 Q60 96 74 90" stroke="#0a4d2a" stroke-width="1.5" fill="none" opacity="0.25"/>
+        <path d="M40 56 Q34 80 24 110 Q60 118 96 110 Q86 80 80 56 Z" fill="url(#gShade)"/>
+      </symbol>
+
+      <!-- Shim (jins) -->
+      <symbol id="pants" viewBox="0 0 120 120">
+        <path d="M34 14 L86 14 L90 106 L70 106 L62 52 L58 52 L50 106 L30 106 Z" fill="url(#gDenim)"/>
+        <path d="M34 14 L86 14 L86 24 L34 24 Z" fill="#163f8a"/>
+        <rect x="56" y="14" width="8" height="14" fill="#0e2d66"/>
+        <circle cx="60" cy="18" r="1.6" fill="#c8d8f5"/>
+        <path d="M60 30 Q52 60 48 100" stroke="#0e2d66" stroke-width="1.5" fill="none" opacity="0.5" stroke-dasharray="3 3"/>
+        <path d="M74 30 Q82 60 84 100" stroke="#0e2d66" stroke-width="1.5" fill="none" opacity="0.5" stroke-dasharray="3 3"/>
+        <path d="M34 14 L30 106 L50 106 L56 40 Z" fill="url(#gShade)" opacity="0.6"/>
+      </symbol>
+
+      <!-- Sport kostyum (kurtka + shim) -->
+      <symbol id="sport" viewBox="0 0 120 120">
+        <path d="M40 18 L80 18 L100 44 L88 56 L80 50 L80 104 L40 104 L40 50 L32 56 L20 44 Z" fill="url(#gGreen)"/>
+        <path d="M60 18 L60 62" stroke="#ffffff" stroke-width="2.5" opacity="0.9"/>
+        <path d="M40 18 L60 40 L80 18" fill="none" stroke="#0a4d2a" stroke-width="2" opacity="0.35"/>
+        <path d="M40 66 L80 66" stroke="#ffffff" stroke-width="2" opacity="0.7"/>
+        <path d="M40 104 L44 60 L60 60 L60 104 Z" fill="#128a4b"/>
+        <path d="M80 104 L76 60 L60 60 L60 104 Z" fill="#0f7a40"/>
+        <path d="M40 18 L40 104 L80 104 L80 18 Z" fill="url(#gShade)" opacity="0.5"/>
+      </symbol>
+
+      <!-- Kurtka -->
+      <symbol id="jacket" viewBox="0 0 120 120">
+        <path d="M30 34 L50 22 L60 34 L70 22 L90 34 L92 100 Q60 108 28 100 Z" fill="url(#gBlue)"/>
+        <path d="M60 34 L60 106" stroke="#0c2f6e" stroke-width="2"/>
+        <path d="M56 34 L64 34" stroke="#c8d8f5" stroke-width="2"/>
+        <path d="M34 56 L56 58 M34 74 L56 76" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
+        <path d="M66 58 L86 56 M66 76 L86 74" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
+        <path d="M30 34 L28 100 Q60 108 92 100 L90 34 Q60 42 30 34 Z" fill="url(#gShade)" opacity="0.6"/>
+      </symbol>
+
+      <!-- Futbolka -->
+      <symbol id="tee" viewBox="0 0 120 120">
+        <path d="M44 20 Q60 28 76 20 L100 36 L92 56 L84 50 L84 104 L36 104 L36 50 L28 56 L20 36 Z" fill="url(#gGreen)"/>
+        <path d="M44 20 Q60 30 76 20" stroke="#0a4d2a" stroke-width="2" fill="none" opacity="0.4"/>
+        <path d="M36 50 L36 104 L84 104 L84 50 Z" fill="url(#gShade)" opacity="0.6"/>
+        <path d="M46 72 Q60 78 74 72" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.5"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header>
+    <div class="nav">
+      <div class="logo">DO'KONIM</div>
+      <div class="nav-links">
+        <a href="#mahsulotlar">Mahsulotlar</a>
+        <a href="#haqida">Biz haqimizda</a>
+        <a href="#aloqa">Aloqa</a>
+        <button class="cart-btn" id="cartBtn" type="button">
+          Savatcha
+          <span class="badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="floating fl1"></div>
+    <div class="floating fl2"></div>
+    <div class="floating fl3"></div>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <span class="hero-badge">Yangi kolleksiya 2026</span>
+        <h1>Uslubingizni o'zgartiring</h1>
+        <p>Turli brendlardan sifatli va zamonaviy kiyimlar, har kuni uchun. Qulay narx, tez yetkazib berish.</p>
+        <a class="btn btn-main" href="#mahsulotlar">Xaridni boshlash</a>
+      </div>
+
+      <div class="stage">
+        <div class="showcase">
+          <svg class="garment g1" viewBox="0 0 120 120" aria-hidden="true"><use href="#jacket"/></svg>
+          <svg class="garment g2" viewBox="0 0 120 120" aria-hidden="true"><use href="#dress"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="mahsulotlar">
+    <span class="tag">Katalog</span>
+    <h2>Brendlar va mahsulotlar</h2>
+    <p class="subtitle">Brend bo'yicha filtrlang, savatchaga qo'shing</p>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">Barchasi</button>
+      <button class="filter-btn" data-filter="Nova">Nova</button>
+      <button class="filter-btn" data-filter="Skyline">Skyline</button>
+      <button class="filter-btn" data-filter="Urban">Urban</button>
+    </div>
+
+    <div class="grid" id="grid">
+
+      <div class="card" data-brand="Nova">
+        <div class="card-inner">
+          <span class="brand-tag">NOVA</span>
+          <div class="card-img c-blue">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#shirt"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Erkaklar ko'ylagi</h3>
+            <div class="brand">Nova</div>
+            <div class="price">150 000 so'm</div>
+            <div class="desc">Yengil va qulay matodan</div>
+            <button class="add-btn" type="button" data-name="Erkaklar ko'ylagi" data-price="150000" data-color="#cfe2ff" data-icon="shirt">Savatchaga qo'shish</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-brand="Skyline">
+        <div class="card-inner">
+          <span class="brand-tag">SKYLINE</span>
+          <div class="card-img c-green">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#dress"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Ayollar ko'ylagi</h3>
+            <div class="brand">Skyline</div>
+            <div class="price">190 000 so'm</div>
+            <div class="desc">Nafis va zamonaviy uslub</div>
+            <button class="add-btn" type="button" data-name="Ayollar ko'ylagi" data-price="190000" data-color="#cff5e0" data-icon="dress">Savatchaga qo'shish</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-brand="Urban">
+        <div class="card-inner">
+          <span class="brand-tag">URBAN</span>
+          <div class="card-img c-mix">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#pants"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Jins shim</h3>
+            <div class="brand">Urban</div>
+            <div class="price">220 000 so'm</div>
+            <div class="desc">Mustahkam va chiroyli</div>
+            <button class="add-btn" type="button" data-name="Jins shim" data-price="220000" data-color="#cfe2ff" data-icon="pants">Savatchaga qo'shish</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-brand="Skyline">
+        <div class="card-inner">
+          <span class="brand-tag">SKYLINE</span>
+          <div class="card-img c-green">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#sport"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Sport kostyum</h3>
+            <div class="brand">Skyline</div>
+            <div class="price">280 000 so'm</div>
+            <div class="desc">Harakat uchun qulay</div>
+            <button class="add-btn" type="button" data-name="Sport kostyum" data-price="280000" data-color="#cff5e0" data-icon="sport">Savatchaga qo'shish</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-brand="Nova">
+        <div class="card-inner">
+          <span class="brand-tag">NOVA</span>
+          <div class="card-img c-mix">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#jacket"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Kurtka</h3>
+            <div class="brand">Nova</div>
+            <div class="price">320 000 so'm</div>
+            <div class="desc">Shamolga chidamli, issiq</div>
+            <button class="add-btn" type="button" data-name="Kurtka" data-price="320000" data-color="#cfe2ff" data-icon="jacket">Savatchaga qo'shish</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-brand="Urban">
+        <div class="card-inner">
+          <span class="brand-tag">URBAN</span>
+          <div class="card-img c-blue">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#tee"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Yozgi futbolka</h3>
+            <div class="brand">Urban</div>
+            <div class="price">120 000 so'm</div>
+            <div class="desc">Paxta matodan, yengil</div>
+            <button class="add-btn" type="button" data-name="Yozgi futbolka" data-price="120000" data-color="#e8f1ff" data-icon="tee">Savatchaga qo'shish</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="haqida" class="about">
+    <div class="about-inner">
+      <span class="tag">Biz haqimizda</span>
+      <h2>Nega aynan biz?</h2>
+      <p class="subtitle">Sifatli kiyimlarni qulay narxda taklif qilamiz. Har bir mahsulot sinovdan o'tkazilgan.</p>
+      <div class="features">
+        <div class="feature f1">Sifatli mato<small>Har bir tikuv nazorat qilinadi</small></div>
+        <div class="feature f2">Qulay narx<small>Har kim uchun mos byudjet</small></div>
+        <div class="feature f3">Tez yetkazish<small>Buyurtma tez yetib boradi</small></div>
+        <div class="feature f4">Qaytarish kafolati<small>Mos kelmasa qaytarish mumkin</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="aloqa">
+    <span class="tag">Aloqa</span>
+    <h2>Biz bilan bog'laning</h2>
+    <p class="subtitle">Savollaringiz bo'lsa, bizga yozing yoki qo'ng'iroq qiling</p>
+    <div class="contact-card">
+      <p>Telefon: <a href="tel:+998900000000">+998 90 000 00 00</a></p>
+      <p>Instagram: <a href="https://instagram.com/" target="_blank" rel="noopener">@dokonim</a></p>
+      <p>Manzil: Shahar, ko'cha, uy raqami</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Do'konim. Barcha huquqlar himoyalangan.
+  </footer>
+
+  <!-- Savatcha -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart" id="cart" aria-label="Savatcha">
+    <div class="cart-head">
+      <h3>Savatcha</h3>
+      <button class="close-btn" id="closeCart" type="button" aria-label="Yopish">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-foot">
+      <div class="total-row">
+        <span>Jami:</span>
+        <span id="cartTotal">0 so'm</span>
+      </div>
+      <button class="checkout" type="button" id="checkout">Buyurtma berish</button>
+    </div>
+  </aside>
+
+  <script>
+    (function () {
+      var cart = [];
+
+      var cartBtn = document.getElementById('cartBtn');
+      var cartEl = document.getElementById('cart');
+      var overlay = document.getElementById('overlay');
+      var closeBtn = document.getElementById('closeCart');
+      var itemsEl = document.getElementById('cartItems');
+      var totalEl = document.getElementById('cartTotal');
+      var countEl = document.getElementById('cartCount');
+      var checkoutBtn = document.getElementById('checkout');
+
+      function formatPrice(n) {
+        return n.toLocaleString('en-US').replace(/,/g, ' ') + " so'm";
+      }
+
+      function renderCart() {
+        var total = 0, count = 0;
+        itemsEl.innerHTML = '';
+
+        if (cart.length === 0) {
+          itemsEl.innerHTML = '<div class="cart-empty">Savatcha hozircha bo\'sh</div>';
+        }
+
+        cart.forEach(function (item, i) {
+          total += item.price * item.qty;
+          count += item.qty;
+
+          var row = document.createElement('div');
+          row.className = 'cart-item';
+          row.innerHTML =
+            '<div class="cart-thumb" style="background:' + item.color + '">' +
+              '<svg viewBox="0 0 120 120" aria-hidden="true"><use href="#' + item.icon + '"/></svg>' +
+            '</div>' +
+            '<div class="cart-info">' +
+              '<strong>' + item.name + '</strong>' +
+              '<span>' + formatPrice(item.price) + '</span>' +
+              '<div class="qty">' +
+                '<button type="button" data-act="dec" data-i="' + i + '">&minus;</button>' +
+                '<b>' + item.qty + '</b>' +
+                '<button type="button" data-act="inc" data-i="' + i + '">+</button>' +
+              '</div>' +
+            '</div>' +
+            '<button class="remove" type="button" data-act="del" data-i="' + i + '" aria-label="O\'chirish">&times;</button>';
+          itemsEl.appendChild(row);
+        });
+
+        totalEl.textContent = formatPrice(total);
+        countEl.textContent = count;
+      }
+
+      function flyDot(btn) {
+        var from = btn.getBoundingClientRect();
+        var to = cartBtn.getBoundingClientRect();
+        var dot = document.createElement('div');
+        dot.className = 'fly';
+        dot.style.left = (from.left + from.width / 2 - 11) + 'px';
+        dot.style.top = (from.top + from.height / 2 - 11) + 'px';
+        document.body.appendChild(dot);
+        if (dot.animate) {
+          dot.animate([
+            { transform: 'translate(0,0) scale(1)', opacity: 1 },
+            { transform: 'translate(' + (to.left - from.left) + 'px,' + (to.top - from.top) + 'px) scale(0.4)', opacity: 0.3 }
+          ], { duration: 700, easing: 'cubic-bezier(.5,0,.8,.4)' }).onfinish = function () { dot.remove(); };
+        } else {
+          setTimeout(function () { dot.remove(); }, 700);
+        }
+      }
+
+      function addToCart(btn) {
+        var name = btn.getAttribute('data-name');
+        var price = parseInt(btn.getAttribute('data-price'), 10);
+        var found = null;
+        cart.forEach(function (it) { if (it.name === name) found = it; });
+        if (found) {
+          found.qty += 1;
+        } else {
+          cart.push({
+            name: name,
+            price: price,
+            qty: 1,
+            color: btn.getAttribute('data-color'),
+            icon: btn.getAttribute('data-icon')
+          });
+        }
+        renderCart();
+        cartBtn.classList.remove('bump');
+        void cartBtn.offsetWidth;
+        cartBtn.classList.add('bump');
+        flyDot(btn);
+      }
+
+      function openCart() { cartEl.classList.add('open'); overlay.classList.add('open'); }
+      function closeCart() { cartEl.classList.remove('open'); overlay.classList.remove('open'); }
+
+      document.querySelectorAll('.add-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () { addToCart(btn); });
+      });
+
+      itemsEl.addEventListener('click', function (e) {
+        var t = e.target.closest('button[data-act]');
+        if (!t) return;
+        var i = parseInt(t.getAttribute('data-i'), 10);
+        var act = t.getAttribute('data-act');
+        if (act === 'inc') cart[i].qty += 1;
+        if (act === 'dec') cart[i].qty -= 1;
+        if (act === 'del' || cart[i].qty <= 0) cart.splice(i, 1);
+        renderCart();
+      });
+
+      cartBtn.addEventListener('click', openCart);
+      closeBtn.addEventListener('click', closeCart);
+      overlay.addEventListener('click', closeCart);
+
+      checkoutBtn.addEventListener('click', function () {
+        if (cart.length === 0) {
+          alert("Savatcha bo'sh");
+          return;
+        }
+        alert("Buyurtmangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.");
+        cart = [];
+        renderCart();
+        closeCart();
+      });
+
+      var filterBtns = document.querySelectorAll('.filter-btn');
+      var cards = document.querySelectorAll('.card');
+      filterBtns.forEach(function (fb) {
+        fb.addEventListener('click', function () {
+          filterBtns.forEach(function (x) { x.classList.remove('active'); });
+          fb.classList.add('active');
+          var f = fb.getAttribute('data-filter');
+          cards.forEach(function (c) {
+            var show = f === 'all' || c.getAttribute('data-brand') === f;
+            c.classList.toggle('hidden', !show);
+            if (show) {
+              c.style.animation = 'none';
+              void c.offsetWidth;
+              c.style.animation = '';
+            }
+          });
+        });
+      });
+
+      renderCart();
+    })();
+  </script>
+
+</body>
+</html>
